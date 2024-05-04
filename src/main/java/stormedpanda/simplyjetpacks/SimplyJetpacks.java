@@ -16,7 +16,6 @@ import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -39,15 +38,10 @@ import stormedpanda.simplyjetpacks.integration.CuriosIntegration;
 import stormedpanda.simplyjetpacks.item.JetpackItem;
 import stormedpanda.simplyjetpacks.item.JetpackType;
 import stormedpanda.simplyjetpacks.item.PilotGogglesItem;
-import stormedpanda.simplyjetpacks.item.SJItemGroup;
 import stormedpanda.simplyjetpacks.model.JetpackModelLayers;
 import stormedpanda.simplyjetpacks.network.NetworkHandler;
-import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.CuriosCapability;
-import top.theillusivec4.curios.api.SlotTypeMessage;
-import top.theillusivec4.curios.api.SlotTypePreset;
 
-import java.lang.reflect.Array;
 import java.util.stream.Collectors;
 
 import static stormedpanda.simplyjetpacks.handlers.KeybindHandler.*;
@@ -61,8 +55,6 @@ public class SimplyJetpacks {
 
     public static final Logger LOGGER = LogManager.getLogger();
 
-    public static final SJItemGroup tabSimplyJetpacks = (SJItemGroup) new SJItemGroup().setEnchantmentCategories(RegistryHandler.JETPACK_ENCHANTMENT_TYPE);;
-
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     public static final RegistryObject<CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register(SimplyJetpacks.MODID, () -> CreativeModeTab.builder()
             .withTabsBefore(CreativeModeTabs.COMBAT)
@@ -71,7 +63,7 @@ public class SimplyJetpacks {
                 int i = 0;
                 Object[] items = RegistryHandler.ITEMS.getEntries().toArray();
                 for (i < RegistryHandler.ITEMS.getEntries().toArray().length, i++) {
-                    ItemStack stack = new ItemStack((Item) items[i]. .get());
+                    ItemStack stack = new ItemStack((Item) items[i].get());
                 }
                 output.accept(new ItemStack(RegistryHandler.ARMORPLATING_IE1.get())); // Add the example item to the tab. For your own tabs, this method is preferred over the event
             }).build());
@@ -79,7 +71,7 @@ public class SimplyJetpacks {
     public static final ResourceLocation JETPACK_SLOT = new ResourceLocation(MODID, "gui/empty_jetpack_slot");
 
     public SimplyJetpacks() {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onTextureStitch));
+        //DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onTextureStitch));
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
@@ -125,7 +117,7 @@ public class SimplyJetpacks {
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
         if (ModList.get().isLoaded("curios")) {
-            InterModComms.sendTo(MODID, CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.HEAD.getMessageBuilder().build());
+            //InterModComms.sendTo(MODID, CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.HEAD.getMessageBuilder().build());
         }
     }
 
@@ -143,7 +135,7 @@ public class SimplyJetpacks {
         LOGGER.info("Server stopping...");
         CommonJetpackHandler.clear();
     }
-
+/*
     private void onTextureStitch(TextureStitchEvent.Pre event) {
         if (ModList.get().isLoaded("curios")) {
             if (event.getAtlas().location().equals(InventoryMenu.BLOCK_ATLAS)) {
@@ -151,7 +143,7 @@ public class SimplyJetpacks {
             }
         }
     }
-
+*/
     private void attachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
         if (!ModList.get().isLoaded("curios")) {
             return;
