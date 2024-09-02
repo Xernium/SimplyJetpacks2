@@ -10,7 +10,7 @@ import stormedpanda.simplyjetpacks.SimplyJetpacks;
 public class SJItemModelProvider extends ItemModelProvider {
 
     public SJItemModelProvider(DataGenerator generatorIn, ExistingFileHelper existingFileHelper) {
-        super(generatorIn, SimplyJetpacks.MODID, existingFileHelper);
+        super(generatorIn.getPackOutput(), SimplyJetpacks.MODID, existingFileHelper);
     }
 
     @Override

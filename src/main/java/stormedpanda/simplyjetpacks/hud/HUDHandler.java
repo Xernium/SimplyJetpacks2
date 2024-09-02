@@ -31,7 +31,6 @@ public class HUDHandler {
                 Item item = chestplate.getItem();
 
                 if (!chestplate.isEmpty() && item instanceof JetpackItem) {
-                    JetpackItem jetpack = (JetpackItem) item;
 
                     IHUDInfoProvider provider = (IHUDInfoProvider) chestplate.getItem();
 
@@ -41,12 +40,12 @@ public class HUDHandler {
                         return;
                     }
                     int count = 0;
-                    PoseStack matrix = event.getPoseStack();
+                    PoseStack matrix = event.getGuiGraphics().pose();
                     matrix.pushPose();
                     matrix.scale(SimplyJetpacksConfig.hudScale.get(), SimplyJetpacksConfig.hudScale.get(), 1.0F);
                     Window window = event.getWindow();
                     for (Component text : renderStrings) {
-                        HUDRenderHelper.drawStringAtPosition(window, matrix, text, count);
+                        HUDRenderHelper.drawStringAtPosition(event.getGuiGraphics(), window, text, count);
                         count++;
                     }
                     matrix.popPose();

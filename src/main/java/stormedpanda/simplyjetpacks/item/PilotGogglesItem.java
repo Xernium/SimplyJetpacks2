@@ -18,21 +18,22 @@ import java.util.List;
 
 public class PilotGogglesItem extends ArmorItem {
 
-    private final String type;
+    private final String materialType;
 
-    public PilotGogglesItem(String type) {
-        super(JetpackArmorMaterial.PILOT_GOGGLES, EquipmentSlot.HEAD, new Properties().tab(SimplyJetpacks.tabSimplyJetpacks));
-        this.type = type;
+    public PilotGogglesItem(String materialType) {
+        super(JetpackArmorMaterial.PILOT_GOGGLES, Type.HELMET, new Properties()); //TODO 1.20: Creative tab fix
+        //super(JetpackArmorMaterial.PILOT_GOGGLES, EquipmentSlot.HEAD, new Properties().tab(SimplyJetpacks.tabSimplyJetpacks)); //TODO 1.20: Creative tab fix
+        this.materialType = materialType;
     }
 
-    public String getType() {
-        return type;
+    public String getMaterialType() {
+        return materialType;
     }
 
     @Nullable
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-        return new ResourceLocation(SimplyJetpacks.MODID, "textures/models/armor/pilot_goggles_" + this.type + ".png").toString();
+        return new ResourceLocation(SimplyJetpacks.MODID, "textures/models/armor/pilot_goggles_" + this.materialType + ".png").toString();
     }
 
 

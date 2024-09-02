@@ -6,8 +6,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -41,7 +43,7 @@ public class RegistryHandler {
     public static final RegistryObject<SimpleParticleType> RAINBOW_PARTICLE = PARTICLE_TYPES.register("rainbow_particle", () -> new SimpleParticleType(false));
 
     // Recipes:
-    public static final RegistryObject<RecipeSerializer<JetpackCustomRecipe>> JETPACK_CUSTOM_RECIPE = RECIPE_SERIALIZERS.register("jetpack_custom_recipe",() -> new SimpleRecipeSerializer<>(JetpackCustomRecipe::new));
+    public static final RegistryObject<RecipeSerializer<JetpackCustomRecipe>> JETPACK_CUSTOM_RECIPE = RECIPE_SERIALIZERS.register("jetpack_custom_recipe",() -> new SimpleCraftingRecipeSerializer<>((location, category) -> new JetpackCustomRecipe(location)));
 
     // Enchantments:
     public static final EnchantmentCategory JETPACK_ENCHANTMENT_TYPE = EnchantmentCategory.create("JETPACK", (item -> item instanceof JetpackItem));
@@ -144,7 +146,7 @@ public class RegistryHandler {
     public static final RegistryObject<SJItem> FLUX_CHESTPLATE = ITEMS.register("flux_chestplate", SJItem::new);
 
     // Sound Events
-    public static final RegistryObject<SoundEvent> JETPACK_SOUND = SOUNDS.register("jetpack", () -> new SoundEvent(new ResourceLocation(SimplyJetpacks.MODID, "jetpack")));
-    public static final RegistryObject<SoundEvent> JETPACK_OTHER_SOUND = SOUNDS.register("jetpack_other", () -> new SoundEvent(new ResourceLocation(SimplyJetpacks.MODID, "jetpack_other")));
-    public static final RegistryObject<SoundEvent> ROCKET_SOUND = SOUNDS.register("rocket", () -> new SoundEvent(new ResourceLocation(SimplyJetpacks.MODID, "rocket")));
+    public static final RegistryObject<SoundEvent> JETPACK_SOUND = SOUNDS.register("jetpack", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SimplyJetpacks.MODID, "jetpack")));
+    public static final RegistryObject<SoundEvent> JETPACK_OTHER_SOUND = SOUNDS.register("jetpack_other", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SimplyJetpacks.MODID, "jetpack_other")));
+    public static final RegistryObject<SoundEvent> ROCKET_SOUND = SOUNDS.register("rocket", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SimplyJetpacks.MODID, "rocket")));
 }

@@ -3,6 +3,7 @@ package stormedpanda.simplyjetpacks.item;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -49,13 +50,23 @@ public enum JetpackArmorMaterial implements ArmorMaterial {
 	}
 
 	@Override
+	public int getDurabilityForType(ArmorItem.Type slotIn) {
+		return max_damage_array[slotIn.getSlot().getIndex()] * this.durability;
+	}
+
+	@Override
+	public int getDefenseForType(ArmorItem.Type slotIn) {
+		return this.damageReductionAmounts[slotIn.getSlot().getIndex()];
+	}
+
+	@Override
 	public int getEnchantmentValue() {
 		return this.enchantability;
 	}
 
 	@Override
 	public SoundEvent getEquipSound() {
-		return new SoundEvent(new ResourceLocation(equipSound));
+		return SoundEvent.createVariableRangeEvent(new ResourceLocation(equipSound));
 	}
 
 	@Override
@@ -67,16 +78,6 @@ public enum JetpackArmorMaterial implements ArmorMaterial {
 	@Override
 	public String getName() {
 		return SimplyJetpacks.MODID + ":" + this.name;
-	}
-
-	@Override
-	public int getDurabilityForSlot(EquipmentSlot slotIn) {
-		return max_damage_array[slotIn.getIndex()] * this.durability;
-	}
-
-	@Override
-	public int getDefenseForSlot(EquipmentSlot slotIn) {
-		return this.damageReductionAmounts[slotIn.getIndex()];
 	}
 
 	@Override

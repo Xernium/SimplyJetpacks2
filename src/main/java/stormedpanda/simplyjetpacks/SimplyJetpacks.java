@@ -1,11 +1,10 @@
 package stormedpanda.simplyjetpacks;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -20,13 +19,14 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import stormedpanda.simplyjetpacks.config.SimplyJetpacksConfig;
 import stormedpanda.simplyjetpacks.crafting.JetpackCraftingEvents;
 import stormedpanda.simplyjetpacks.handlers.ClientJetpackHandler;
 import stormedpanda.simplyjetpacks.handlers.CommonJetpackHandler;
-import stormedpanda.simplyjetpacks.handlers.KeybindHandler;
+import stormedpanda.simplyjetpacks.handlers.KeybindForgeBusHandler;
 import stormedpanda.simplyjetpacks.handlers.RegistryHandler;
 import stormedpanda.simplyjetpacks.hud.HUDHandler;
 import stormedpanda.simplyjetpacks.integration.CuriosIntegration;
@@ -43,29 +43,28 @@ import top.theillusivec4.curios.api.SlotTypePreset;
 
 import java.util.stream.Collectors;
 
-import static stormedpanda.simplyjetpacks.handlers.KeybindHandler.*;
-
 @Mod(SimplyJetpacks.MODID)
 public class SimplyJetpacks {
 
     public static final String MODID = "simplyjetpacks";
     public static final String MODNAME = "Simply Jetpacks 2";
     public static final String VERSION = "${version}";
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_TAB = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
     public static final Logger LOGGER = LogManager.getLogger();
-
-    public static final SJItemGroup tabSimplyJetpacks = (SJItemGroup) new SJItemGroup().setEnchantmentCategories(RegistryHandler.JETPACK_ENCHANTMENT_TYPE);;
 
     public static final ResourceLocation JETPACK_SLOT = new ResourceLocation(MODID, "gui/empty_jetpack_slot");
 
     public SimplyJetpacks() {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onTextureStitch));
+        // TODO 1.20: Atlas stitching
+        //DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onTextureStitch));
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRegisterKeyMaps);
+        CREATIVE_TAB.register(SimplyJetpacks.MODID + ".main", SJItemGroup::new);
+        CREATIVE_TAB.register(FMLJavaModLoadingContext.get().getModEventBus());
 
         // TODO: fix this.
         if (ModList.get().isLoaded("curios")) {
@@ -93,16 +92,17 @@ public class SimplyJetpacks {
 
     private void clientSetup(final FMLClientSetupEvent event) {
         LOGGER.info("Client Setup Method registered.");
-        MinecraftForge.EVENT_BUS.register(new KeybindHandler());
+
+        MinecraftForge.EVENT_BUS.register(new KeybindForgeBusHandler());
         MinecraftForge.EVENT_BUS.register(new ClientJetpackHandler());
         MinecraftForge.EVENT_BUS.register(new HUDHandler());
-//        KeybindHandler.setup();
 
         if (ModList.get().isLoaded("curios")) {
             CuriosIntegration.initRenderers();
         }
     }
 
+    @SuppressWarnings({"removal", "deprecated"})
     private void enqueueIMC(final InterModEnqueueEvent event) {
         if (ModList.get().isLoaded("curios")) {
             InterModComms.sendTo(MODID, CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.HEAD.getMessageBuilder().build());
@@ -125,13 +125,15 @@ public class SimplyJetpacks {
         CommonJetpackHandler.clear();
     }
 
-    private void onTextureStitch(TextureStitchEvent.Pre event) {
+    // TODO 1.20: Atlas stitching required ... not a priority for now
+    /*
+    private void onTextureStitch(TextureStitchEvent event) {
         if (ModList.get().isLoaded("curios")) {
             if (event.getAtlas().location().equals(InventoryMenu.BLOCK_ATLAS)) {
                 event.addSprite(JETPACK_SLOT);
             }
         }
-    }
+    }*/
 
     private void attachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
         if (!ModList.get().isLoaded("curios")) {
@@ -144,16 +146,5 @@ public class SimplyJetpacks {
         if (stack.getItem() instanceof PilotGogglesItem) {
              event.addCapability(CuriosCapability.ID_ITEM, CuriosIntegration.initGogglesCapabilities(stack));
         }
-    }
-
-    // TODO: fix this
-    private void onRegisterKeyMaps(RegisterKeyMappingsEvent event) {
-        event.register(JETPACK_GUI_KEY);
-        event.register(JETPACK_ENGINE_KEY);
-        event.register(JETPACK_HOVER_KEY);
-        event.register(JETPACK_EHOVER_KEY);
-        event.register(JETPACK_CHARGER_KEY);
-        event.register(JETPACK_THROTTLE_DECREASE);
-        event.register(JETPACK_THROTTLE_INCREASE);
     }
 }

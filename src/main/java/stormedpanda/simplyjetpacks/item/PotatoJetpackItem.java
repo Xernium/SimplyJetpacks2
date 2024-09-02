@@ -2,9 +2,14 @@ package stormedpanda.simplyjetpacks.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -16,7 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.NotNull;
 import stormedpanda.simplyjetpacks.SimplyJetpacks;
 import stormedpanda.simplyjetpacks.handlers.CommonJetpackHandler;
@@ -56,7 +61,7 @@ public class PotatoJetpackItem extends JetpackItem {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level levelIn, List<Component> tooltip, TooltipFlag flagIn) {
-        if (CapabilityEnergy.ENERGY == null) return;
+        if (ForgeCapabilities.ENERGY == null) return;
         tooltip.add(SJTextUtil.translate("tooltip", "jetpack_potato"));
         SJTextUtil.addBaseInfo(stack, tooltip);
         if (KeyboardUtil.isHoldingShift()) {
@@ -85,8 +90,8 @@ public class PotatoJetpackItem extends JetpackItem {
                 if (item.getEnergy(stack) <= 0) {
                     Random random = new Random();
                     player.getInventory().removeItem(stack);
-                    if (!player.level.isClientSide()) {
-                        player.level.explode(player, player.getX(), player.getY(), player.getZ(), 4.0F, Explosion.BlockInteraction.NONE);
+                    if (!player.getCommandSenderWorld().isClientSide()) {
+                        player.getCommandSenderWorld().explode(player, player.getX(), player.getY(), player.getZ(), 4.0F, Level.ExplosionInteraction.NONE);
                     }
                     for (int i = 0; i <= random.nextInt(3) + 4; i++) {
                         SimplyJetpacks.LOGGER.info("SJ2: CREATING FIREWORKS!");
@@ -96,7 +101,12 @@ public class PotatoJetpackItem extends JetpackItem {
                     }
 //                    player.hurt(new EntityDamageSource(SimplyJetpacks.MODID + (random.nextBoolean() ? ".potato_jetpack" : ".jetpack_explode"), player), 100F);
                     player.drop(new ItemStack(Items.BAKED_POTATO), false);
-                    player.hurt(new DamageSource(SimplyJetpacks.MODID + (random.nextBoolean() ? ".potato_jetpack" : ".jetpack_explode")), 100F);
+
+                    // TODO 1.20: Player hurt
+                    //player.hurt(player.damageSources().anvil())
+                    //ResourceKey<DamageType> deathByJetpack = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(SimplyJetpacks.MODID + (random.nextBoolean() ? ".potato_jetpack" : ".jetpack_explode")));
+                    //Holder.Reference.createStandAlone(SimplyJetpacks.MODID, deathByJetpack);
+                    //player.hurt(new DamageSource(deathByJetpack), 100F);
                 }
             } else {
                 if (force || CommonJetpackHandler.isHoldingUp(player)) {
@@ -135,7 +145,7 @@ public class PotatoJetpackItem extends JetpackItem {
             this.setFired(itemStack);
             // TODO: test this
 //            player.level.playSound(player, player, SJSounds.ROCKET, SoundSource.PLAYERS, 1F, 1F);
-            player.level.playSound(player, player, RegistryHandler.ROCKET_SOUND.get(), SoundSource.PLAYERS, 1F, 1F);
+            player.getCommandSenderWorld().playSound(player, player, RegistryHandler.ROCKET_SOUND.get(), SoundSource.PLAYERS, 1F, 1F);
         }
     }
 }

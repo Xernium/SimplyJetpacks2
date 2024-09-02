@@ -7,6 +7,7 @@ import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.LocationPredicate;
 import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
@@ -54,7 +55,7 @@ public class SJAdvancements implements Consumer<Consumer<Advancement>> {
     private Advancement jetpackAdvancement(Consumer<Advancement> consumer, Advancement parent, ItemLike item) {
         // TODO: test this
 //        String name = item.asItem().getRegistryName().getPath();
-        String name = Registry.ITEM.getKey(item.asItem()).getPath();
+        String name = BuiltInRegistries.ITEM.getKey(item.asItem()).getPath();
         return Advancement.Builder.advancement().parent(parent)
                 .display(item,
                         Component.translatable("advancement.simplyjetpacks." + name + ".title"),
@@ -67,7 +68,7 @@ public class SJAdvancements implements Consumer<Consumer<Advancement>> {
 
     private Advancement advancement(Consumer<Advancement> consumer, Advancement parent, ItemLike item, String path, FrameType frame, String criterionId, @Nullable CriterionTriggerInstance criterion) {
 //        String name = item.asItem().getRegistryName().getPath();
-        String name = Registry.ITEM.getKey(item.asItem()).getPath();
+        String name = BuiltInRegistries.ITEM.getKey(item.asItem()).getPath();
         return Advancement.Builder.advancement().parent(parent)
                 .display(item,
                         Component.translatable("advancement.simplyjetpacks." + name + ".title"),

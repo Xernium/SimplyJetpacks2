@@ -23,41 +23,41 @@ public class NetworkHandler {
         CHANNEL_INSTANCE.messageBuilder(PacketToggleEngine.class, nextID())
                 .encoder(PacketToggleEngine::toBytes)
                 .decoder(PacketToggleEngine::new)
-                .consumer(PacketToggleEngine::handle)
+                .consumerNetworkThread(PacketToggleEngine::handle)
                 .add();
         CHANNEL_INSTANCE.messageBuilder(PacketToggleHover.class, nextID())
                 .encoder(PacketToggleHover::toBytes)
                 .decoder(PacketToggleHover::new)
-                .consumer(PacketToggleHover::handle)
+                .consumerNetworkThread(PacketToggleHover::handle)
                 .add();
 
         CHANNEL_INSTANCE.messageBuilder(PacketToggleEHover.class, nextID())
                 .encoder(PacketToggleEHover::toBytes)
                 .decoder(PacketToggleEHover::new)
-                .consumer(PacketToggleEHover::handle)
+                .consumerNetworkThread(PacketToggleEHover::handle)
                 .add();
 
         CHANNEL_INSTANCE.messageBuilder(PacketToggleCharger.class, nextID())
                 .encoder(PacketToggleCharger::toBytes)
                 .decoder(PacketToggleCharger::new)
-                .consumer(PacketToggleCharger::handle)
+                .consumerNetworkThread(PacketToggleCharger::handle)
                 .add();
 
         CHANNEL_INSTANCE.messageBuilder(PacketUpdateInput.class, nextID())
                 .encoder(PacketUpdateInput::toBytes)
                 .decoder(PacketUpdateInput::fromBytes)
-                .consumer(PacketUpdateInput::handle)
+                .consumerNetworkThread(PacketUpdateInput::handle)
                 .add();
 
         CHANNEL_INSTANCE.messageBuilder(PacketUpdateThrottle.class, nextID())
                 .encoder(PacketUpdateThrottle::toBytes)
                 .decoder(PacketUpdateThrottle::fromBytes)
-                .consumer(PacketUpdateThrottle::handle)
+                .consumerNetworkThread(PacketUpdateThrottle::handle)
                 .add();
     }
 
     public static void sendToClient(Object packet, ServerPlayer player) {
-        CHANNEL_INSTANCE.sendTo(packet, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+        CHANNEL_INSTANCE.sendTo(packet, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 
     public static void sendToServer(Object packet) {
