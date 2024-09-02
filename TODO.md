@@ -2,5 +2,15 @@
 
 - [ ] Fix achievement triggers in creative mode
 - [ ] Fix patchouli guide book texture
-- [ ] Fix keybinds
+- [x] Fix keybinds
 - [ ] Fix jetpack config values
+
+# 1.20.1 - Todo
+
+- [ ] Fix advancements entirely
+- [ ] Fix Potato jetpack explosions
+- [ ] Fix creative mode tab crash (shadow renderer error)
+- [ ] Fix texture model in Jetpack GUI
+- [ ] Fix Armor toughness values ....
+- [ ] Fix crash caused by swapping jetpack from inventory slot
+- [ ] Fix or replace the onGround tick accessor for multiplayer

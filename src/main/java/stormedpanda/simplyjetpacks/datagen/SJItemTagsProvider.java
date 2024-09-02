@@ -17,12 +17,6 @@ import java.util.concurrent.CompletableFuture;
 
 public class SJItemTagsProvider extends ItemTagsProvider {
 
-    // PackOutput p_275343_,
-    // CompletableFuture<HolderLookup.Provider> p_275729_,
-    // CompletableFuture<TagsProvider.TagLookup<Block>> p_275322_,
-    // String modId,
-    // @org.jetbrains.annotations.Nullable net.minecraftforge.common.data.ExistingFileHelper existingFileHelper
-
     public SJItemTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> blockTagProvider,
                               CompletableFuture<TagsProvider.TagLookup<Block>> tagLookup,
                               @Nullable ExistingFileHelper existingFileHelper) {
