@@ -1,5 +1,6 @@
 package stormedpanda.simplyjetpacks.handlers;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
@@ -39,7 +40,7 @@ public class KeybindForgeBusHandler {
     @SubscribeEvent
     public void onKeyInput(InputEvent.Key event) {
         Player player = Minecraft.getInstance().player;
-        if (player == null) {
+        if (player == null || event.getAction() != InputConstants.PRESS || Minecraft.getInstance().screen != null) {
             return;
         }
         ItemStack chestStack = JetpackUtil.getFromBothSlots(player);

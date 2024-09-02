@@ -51,12 +51,12 @@ public enum JetpackArmorMaterial implements ArmorMaterial {
 
 	@Override
 	public int getDurabilityForType(ArmorItem.Type slotIn) {
-		return max_damage_array[slotIn.getSlot().getIndex()] * this.durability;
+		return max_damage_array[slotIn.ordinal()] * this.durability;
 	}
 
 	@Override
 	public int getDefenseForType(ArmorItem.Type slotIn) {
-		return this.damageReductionAmounts[slotIn.getSlot().getIndex()];
+		return this.damageReductionAmounts[slotIn.ordinal()];
 	}
 
 	@Override

@@ -92,7 +92,7 @@ public class JetpackScreen extends Screen {
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         graphics.blit(JETPACK_TEXTURE, relX, relY, 0, 0, WIDTH, HEIGHT);
         InventoryScreen.renderEntityInInventory(graphics, relX + 80, relY + 90, 40,
-                new Quaternionf((float)(relX + 51) - mouseX, (float)(relY + 75 - 50) - mouseY, 0, 0), null, minecraft.player);
+                new Quaternionf(1.0f, 0, 0, 0), null, minecraft.player);
         graphics.drawCenteredString(minecraft.font, Component.translatable(jetpackStack.getDescriptionId()), relX + 88, relY + 5, 0xFFFFFF);
         RenderSystem.setShaderTexture(0, JETPACK_TEXTURE);
 

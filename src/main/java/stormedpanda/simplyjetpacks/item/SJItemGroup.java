@@ -20,7 +20,11 @@ public class SJItemGroup extends CreativeModeTab {
                 .icon(()-> new ItemStack(RegistryHandler.JETPACK_CREATIVE.get()))
                 .displayItems((params, output) -> {
                     for(RegistryObject<Item> i : RegistryHandler.ITEMS.getEntries()) {
-                        output.accept(new ItemStack(i.get()));
+                        Item item = i.get();
+                        output.accept(new ItemStack(item));
+                        if (item instanceof JetpackItem jetpackItem) {
+                            output.accept(jetpackItem.asChargedCopy());
+                        }
                     }
                 }));
     }

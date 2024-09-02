@@ -46,13 +46,13 @@ public class JetpackItem extends ArmorItem implements IHUDInfoProvider, IEnergyC
     public final int tier;
 
     public JetpackItem(JetpackType jetpackType) {
-        super(JetpackArmorMaterial.JETPACK, Type.CHESTPLATE, new Item.Properties()); //TODO 1.20: Creative tab
+        super(JetpackArmorMaterial.JETPACK, Type.CHESTPLATE, new Item.Properties());
         this.jetpackType = jetpackType;
         this.tier = jetpackType.getTier();
     }
 
     public JetpackItem(JetpackType jetpackType, JetpackArmorMaterial material) {
-        super(material, Type.CHESTPLATE, new Item.Properties()); //TODO 1.20: Creative tab
+        super(material, Type.CHESTPLATE, new Item.Properties());
         this.jetpackType = jetpackType;
         this.tier = jetpackType.getTier();
     }
@@ -243,20 +243,11 @@ public class JetpackItem extends ArmorItem implements IHUDInfoProvider, IEnergyC
         return 0x03fc49;
     }
 
-    // TODO 1.20: Fix this helper or remove
-    /*
-    @Override
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if (this.allowedIn(group)) {
-            items.add(new ItemStack(this));
-            if (!isCreative()) {
-                ItemStack full = new ItemStack(this);
-                //full.getOrCreateTag().putInt(Constants.TAG_ENERGY, jetpackType.getEnergyCapacity());
-                NBTUtil.setInt(full, Constants.TAG_ENERGY, jetpackType.getEnergyCapacity());
-                items.add(full);
-            }
-        }
-    }*/
+    public ItemStack asChargedCopy() {
+        ItemStack full = new ItemStack(this);
+        NBTUtil.setInt(full, Constants.TAG_ENERGY, jetpackType.getEnergyCapacity());
+        return full;
+    }
 
     // TODO: find where MathHelper went and remove this.
     public static int clamp(int min, int value, int max) {

@@ -21,8 +21,7 @@ public class PilotGogglesItem extends ArmorItem {
     private final String materialType;
 
     public PilotGogglesItem(String materialType) {
-        super(JetpackArmorMaterial.PILOT_GOGGLES, Type.HELMET, new Properties()); //TODO 1.20: Creative tab fix
-        //super(JetpackArmorMaterial.PILOT_GOGGLES, EquipmentSlot.HEAD, new Properties().tab(SimplyJetpacks.tabSimplyJetpacks)); //TODO 1.20: Creative tab fix
+        super(JetpackArmorMaterial.PILOT_GOGGLES, Type.HELMET, new Properties());
         this.materialType = materialType;
     }
 

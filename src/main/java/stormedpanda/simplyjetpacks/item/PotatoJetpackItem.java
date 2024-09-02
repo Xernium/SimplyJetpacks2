@@ -99,14 +99,12 @@ public class PotatoJetpackItem extends JetpackItem {
                         //ItemStack firework = FireworksHelper.getRandomFireworks(0, 1, new Random().nextInt(6) + 1, 1);
                         //player.level.createFireworks(new ProjectileImpactEvent.FireworkRocket(player.level, player.getX() + new Random().nextDouble() * 6.0D - 3.0D, player.getY(), player.getZ() + new Random().nextDouble() * 6.0D - 3.0D, firework));
                     }
-//                    player.hurt(new EntityDamageSource(SimplyJetpacks.MODID + (random.nextBoolean() ? ".potato_jetpack" : ".jetpack_explode"), player), 100F);
+//
                     player.drop(new ItemStack(Items.BAKED_POTATO), false);
 
-                    // TODO 1.20: Player hurt
-                    //player.hurt(player.damageSources().anvil())
-                    //ResourceKey<DamageType> deathByJetpack = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(SimplyJetpacks.MODID + (random.nextBoolean() ? ".potato_jetpack" : ".jetpack_explode")));
-                    //Holder.Reference.createStandAlone(SimplyJetpacks.MODID, deathByJetpack);
-                    //player.hurt(new DamageSource(deathByJetpack), 100F);
+                    // TODO 1.20: Player hurt, proper replacement
+                    player.hurt(player.damageSources().generic(), 100.0f);
+                    //player.hurt(new EntityDamageSource(SimplyJetpacks.MODID + (random.nextBoolean() ? ".potato_jetpack" : ".jetpack_explode"), player), 100F);
                 }
             } else {
                 if (force || CommonJetpackHandler.isHoldingUp(player)) {
