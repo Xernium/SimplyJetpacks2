@@ -7,7 +7,7 @@
 
 # 1.20.1 - Todo
 
-- [ ] Fix advancements entirely
+- [x] Fix advancements entirely
 - [x] Fix Potato jetpack explosions
 - [ ] Fix creative mode tab crash (shadow renderer error)
 - [x] Make player model in menu work again correctly (follow cursor)
@@ -15,3 +15,4 @@
 - [x] Fix crash caused by swapping jetpack from inventory slot
 - [x] Fix or replace the onGround tick accessor for multiplayer
 - [x] Fix item tag data gen
+- [ ] Fix weird ghost state when using right click to equip jetpack

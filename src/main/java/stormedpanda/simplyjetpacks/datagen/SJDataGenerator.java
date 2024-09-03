@@ -32,7 +32,7 @@ public final class SJDataGenerator {
         gen.addProvider(true, dummyProvider);
         gen.addProvider(true, new SJItemTagsProvider(gen.getPackOutput(), event.getLookupProvider(), dummyProvider.contentsGetter(), event.getExistingFileHelper()));
         gen.addProvider(true, new SJRecipeProvider(gen));
-        gen.addProvider(true, new SJAdvancementProviderAdapter(gen.getPackOutput(), event.getLookupProvider()));// TODO 1.20: Re-enable advancements
+        gen.addProvider(true, new SJAdvancementProviderAdapter(gen.getPackOutput(), event.getLookupProvider()));
 
         DatapackBuiltinEntriesProvider modRegistryProvider = new SJRegistryProvider(gen.getPackOutput(), event.getLookupProvider());
         gen.addProvider(true, modRegistryProvider);
