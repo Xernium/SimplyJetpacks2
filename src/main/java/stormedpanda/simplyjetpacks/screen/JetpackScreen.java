@@ -27,6 +27,7 @@ import stormedpanda.simplyjetpacks.util.SJTextUtil;
 public class JetpackScreen extends Screen {
 
     private static final Minecraft minecraft = Minecraft.getInstance();
+    private static final float LEAN_FACTOR = 2.0f;
 
     private final ResourceLocation JETPACK_TEXTURE = new ResourceLocation(SimplyJetpacks.MODID, "textures/gui/jetpack_screen.png");
     private static final int WIDTH = 176;
@@ -91,8 +92,14 @@ public class JetpackScreen extends Screen {
         RenderSystem.setShaderTexture(0, JETPACK_TEXTURE);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         graphics.blit(JETPACK_TEXTURE, relX, relY, 0, 0, WIDTH, HEIGHT);
-        InventoryScreen.renderEntityInInventory(graphics, relX + 80, relY + 90, 40,
-                new Quaternionf(1.0f, 0, 0, 0), null, minecraft.player);
+
+        assert minecraft.screen != null;
+        float halfScreenHeight = minecraft.screen.height / 2f;
+        float halfScreenWidth = minecraft.screen.width / 2f;
+        float angleX = -((mouseX - halfScreenWidth) / halfScreenWidth * LEAN_FACTOR);
+        float angleY = -(((mouseY + 25) - halfScreenHeight) / halfScreenHeight * LEAN_FACTOR);
+
+        InventoryScreen.renderEntityInInventoryFollowsAngle(graphics, relX + 80, relY + 90, 40, angleX, angleY, minecraft.player);
         graphics.drawCenteredString(minecraft.font, Component.translatable(jetpackStack.getDescriptionId()), relX + 88, relY + 5, 0xFFFFFF);
         RenderSystem.setShaderTexture(0, JETPACK_TEXTURE);
 
