@@ -7,6 +7,7 @@ import net.minecraftforge.fml.ModList;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import stormedpanda.simplyjetpacks.item.JetpackItem;
 import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.type.ISlotType;
 
 public class JetpackUtil {
 
@@ -28,6 +29,18 @@ public class JetpackUtil {
             CuriosApi.getCuriosHelper().getCurio(itemStack).ifPresent(p -> p.curioBreak(itemStack, player));
         } else {
             player.getInventory().removeItem(getFromChest(player));
+        }
+    }
+
+    public static boolean isInCorrectSlot(int index, ItemStack which, Player player) {
+        if (ModList.get().isLoaded("curios")) {
+            return !CuriosApi.getCuriosHelper().findEquippedCurio(stack -> stack == which, player).map(ImmutableTriple::getRight).orElse(ItemStack.EMPTY).isEmpty();
+        } else {
+            if (index == EquipmentSlot.CHEST.getIndex()) {
+                return player.getItemBySlot(EquipmentSlot.CHEST) == which;
+            } else {
+                return false;
+            }
         }
     }
 }

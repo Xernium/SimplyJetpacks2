@@ -46,7 +46,7 @@ public class JetpackItem extends ArmorItem implements IHUDInfoProvider, IEnergyC
     public final int tier;
 
     public JetpackItem(JetpackType jetpackType) {
-        super(JetpackArmorMaterial.JETPACK, Type.CHESTPLATE, new Item.Properties());
+        super(jetpackType.isArmored() ? JetpackArmorMaterial.JETPACK_ARMORED : JetpackArmorMaterial.JETPACK, Type.CHESTPLATE, new Item.Properties());
         this.jetpackType = jetpackType;
         this.tier = jetpackType.getTier();
     }
@@ -81,22 +81,14 @@ public class JetpackItem extends ArmorItem implements IHUDInfoProvider, IEnergyC
     }
 
     @Override
-    public void onInventoryTick(ItemStack stack, Level level, Player player, int slotIndex, int selectedIndex)
-    {
-        Inventory inv = player.getInventory();
-        int vanillaIndex = slotIndex;
-        if (slotIndex >= inv.items.size()) {
-            vanillaIndex -= inv.items.size();
-            if (vanillaIndex < inv.armor.size()) {
-                if (!player.isSpectator() && stack == JetpackUtil.getFromBothSlots(player)) {
-                    flyUser(player, stack, this, false);
-                    if (this.jetpackType.getChargerMode() && this.isChargerOn(stack)) {
-                        chargeInventory(player, stack);
-                    }
-                }
+    public void inventoryTick(ItemStack stack, Level level, Entity holder, int vanillaIndex, boolean selected) {
+        if (holder instanceof Player player && !player.isSpectator() && JetpackUtil.isInCorrectSlot(vanillaIndex, stack, player)) {
+            flyUser(player, stack, this, false);
+            if (this.jetpackType.getChargerMode() && this.isChargerOn(stack)) {
+                chargeInventory(player, stack);
             }
         }
-        stack.inventoryTick(level, player, vanillaIndex, selectedIndex == vanillaIndex);
+        super.inventoryTick(stack, level, holder, vanillaIndex, selected);
     }
 
     public JetpackType getJetpackType() {
