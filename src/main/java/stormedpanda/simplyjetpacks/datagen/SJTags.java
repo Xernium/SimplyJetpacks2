@@ -1,5 +1,6 @@
 package stormedpanda.simplyjetpacks.datagen;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -18,9 +19,9 @@ public class SJTags {
         return ItemTags.create(new ResourceLocation("forge", path));
     }
     private static TagKey<Item> mod(String path) {
-        return ItemTags.create(new ResourceLocation(SimplyJetpacks.MODID, path));
+        return TagKey.create(Registries.ITEM, new ResourceLocation(SimplyJetpacks.MODID, path));
     }
     private static TagKey<Item> curios(String path) {
-        return ItemTags.create(new ResourceLocation("curios", path));
+        return TagKey.create(Registries.ITEM, new ResourceLocation("curios", path));
     }
 }

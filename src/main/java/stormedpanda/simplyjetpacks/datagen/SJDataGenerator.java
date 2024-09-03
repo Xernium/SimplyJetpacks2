@@ -29,8 +29,8 @@ public final class SJDataGenerator {
 
         // TODO: test the boolean
         gen.addProvider(true, new SJItemModelProvider(gen, existingFileHelper));
-        // TODO 1.20: Fix tag generator, still broken
-        //gen.addProvider(true, new SJItemTagsProvider(gen.getPackOutput(), event.getLookupProvider(), dummyProvider.contentsGetter(), event.getExistingFileHelper()));
+        gen.addProvider(true, dummyProvider);
+        gen.addProvider(true, new SJItemTagsProvider(gen.getPackOutput(), event.getLookupProvider(), dummyProvider.contentsGetter(), event.getExistingFileHelper()));
         gen.addProvider(true, new SJRecipeProvider(gen));
         // gen.addProvider(true, new SJAdvancementProvider(gen));// TODO 1.20: Re-enable advancements
 
