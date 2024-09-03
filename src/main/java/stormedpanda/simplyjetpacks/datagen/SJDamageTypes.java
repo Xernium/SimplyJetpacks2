@@ -10,11 +10,11 @@ import net.minecraft.world.level.Level;
 import stormedpanda.simplyjetpacks.SimplyJetpacks;
 
 public class SJDamageTypes {
-    public final static ResourceKey<DamageType> DEATH_BY_POTATO_JETPACK = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(SimplyJetpacks.MODID, "potato_jetpack"));
+    public final static ResourceKey<DamageType> DEATH_BY_POTATO_JETPACK = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(SimplyJetpacks.MODID, "jetpack_potato"));
     public final static ResourceKey<DamageType> DEATH_BY_JETPACK_EXPLOSION = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(SimplyJetpacks.MODID, "jetpack_explode"));
 
     public static void bootstrap(BootstapContext<DamageType> context) {
-        context.register(DEATH_BY_POTATO_JETPACK, new DamageType("simplyjetpacks.potato_jetpack", DamageScaling.NEVER, 0.1F, DamageEffects.HURT, DeathMessageType.DEFAULT));
+        context.register(DEATH_BY_POTATO_JETPACK, new DamageType("simplyjetpacks.jetpack_potato", DamageScaling.NEVER, 0.1F, DamageEffects.HURT, DeathMessageType.DEFAULT));
         context.register(DEATH_BY_JETPACK_EXPLOSION, new DamageType("simplyjetpacks.jetpack_explode", DamageScaling.NEVER, 0.1F, DamageEffects.HURT, DeathMessageType.DEFAULT));
     }
 
