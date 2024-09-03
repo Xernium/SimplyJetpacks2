@@ -10,9 +10,9 @@ import java.util.EnumSet;
 
 public enum JetpackType {
 
-    POTATO("potato", 1),
-    CREATIVE("creative", 5),
-    CREATIVE_ARMORED("creative_armored", 5, "creative", true),
+    POTATO("potato", 1, true),
+    CREATIVE("creative", 5, true),
+    CREATIVE_ARMORED("creative_armored", 5, "creative", true, true),
 
     VANILLA1("vanilla1", 1),
     VANILLA1_ARMORED("vanilla1_armored", 1, "vanilla1", true, 0),
@@ -59,6 +59,7 @@ public enum JetpackType {
     private final int platingId;
     private final ResourceLocation armorTexture;
     private final int tier;
+    private final boolean noAdvancements;
 
     private int energyCapacity;
     private int energyUsage;
@@ -80,20 +81,33 @@ public enum JetpackType {
     private boolean chargerMode;
 
     JetpackType(String name, int tier) {
-        this(name, tier, name, false, 0);
+        this(name, tier, name, false, 0, false);
+    }
+
+    JetpackType(String name, int tier, boolean noAdvancements) {
+        this(name, tier, name, false, 0, noAdvancements);
     }
 
     JetpackType(String name, int tier, String configKey, boolean armored) {
-        this(name, tier, configKey, armored, 0);
+        this(name, tier, configKey, armored, 0, false);
+    }
+
+    JetpackType(String name, int tier, String configKey, boolean armored, boolean noAdvancements) {
+        this(name, tier, configKey, armored, 0, noAdvancements);
     }
 
     JetpackType(String name, int tier, String configKey, boolean armored, int platingId) {
+        this(name, tier, configKey, armored, platingId, false);
+    }
+
+    JetpackType(String name, int tier, String configKey, boolean armored, int platingId, boolean noAdvancements) {
         this.name = name;
         this.tier = tier;
         this.configKey = configKey;
         this.armored = armored;
         this.platingId = platingId;
         this.armorTexture = new ResourceLocation(("simplyjetpacks:textures/models/armor/jetpack_" + name + ".png"));
+        this.noAdvancements = noAdvancements;
     }
 
     public String getName() {
@@ -195,6 +209,10 @@ public enum JetpackType {
 
     public boolean getChargerMode() {
         return chargerMode;
+    }
+
+    public boolean isNoAdvancements() {
+        return noAdvancements;
     }
 
     public static void loadAllConfigs() {
