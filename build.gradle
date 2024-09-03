@@ -161,8 +161,8 @@ dependencies {
     // FIXME: The follwing mods break genData, comment out before using `runData`.
     //runtimeOnly fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:${immersiveengineering_version}")
 
-    //runtimeOnly fg.deobf("curse.maven:configured-457570:5180900")
-   // runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}+${minecraft_version}")
+    runtimeOnly fg.deobf("curse.maven:configured-457570:5180900")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}+${minecraft_version}")
 }
 
 jar {

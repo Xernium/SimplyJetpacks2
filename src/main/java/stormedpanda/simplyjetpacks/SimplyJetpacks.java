@@ -80,9 +80,6 @@ public class SimplyJetpacks {
         // TODO: fix this (1/3)
         JetpackType.loadAllConfigs();
         RegistryHandler.init();
-
-        // TODO: see if this works.
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> JetpackModelLayers::init);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {

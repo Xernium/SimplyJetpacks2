@@ -12,6 +12,6 @@
 - [ ] Fix creative mode tab crash (shadow renderer error)
 - [x] Make player model in menu work again correctly (follow cursor)
 - [ ] Fix Armor toughness values ....
-- [ ] Fix crash caused by swapping jetpack from inventory slot
+- [x] Fix crash caused by swapping jetpack from inventory slot
 - [x] Fix or replace the onGround tick accessor for multiplayer
-- [ ] Fix item tag data gen
+- [x] Fix item tag data gen

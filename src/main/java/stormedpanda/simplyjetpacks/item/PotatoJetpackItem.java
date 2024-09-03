@@ -49,20 +49,7 @@ public class PotatoJetpackItem extends JetpackItem {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(PotatoJetpackItem.Rendering.INSTANCE);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private static class Rendering implements IClientItemExtensions {
-        private static final PotatoJetpackItem.Rendering INSTANCE = new PotatoJetpackItem.Rendering();
-
-        private Rendering() {
-        }
-
-        @Override
-        public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
-            return null;
-        }
+        consumer.accept(IClientItemExtensions.DEFAULT);
     }
 
     @OnlyIn(Dist.CLIENT)
