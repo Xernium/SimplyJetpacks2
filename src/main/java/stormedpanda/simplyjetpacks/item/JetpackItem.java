@@ -82,7 +82,7 @@ public class JetpackItem extends ArmorItem implements IHUDInfoProvider, IEnergyC
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity holder, int vanillaIndex, boolean selected) {
-        if (holder instanceof Player player && !player.isSpectator() && JetpackUtil.isInCorrectSlot(vanillaIndex, stack, player)) {
+        if (holder instanceof Player player && !player.isSpectator() && (JetpackUtil.isInCorrectSlot(vanillaIndex, stack, player) || selected)) {
             flyUser(player, stack, this, false);
             if (this.jetpackType.getChargerMode() && this.isChargerOn(stack)) {
                 chargeInventory(player, stack);

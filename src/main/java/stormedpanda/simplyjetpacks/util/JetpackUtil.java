@@ -33,14 +33,15 @@ public class JetpackUtil {
     }
 
     public static boolean isInCorrectSlot(int index, ItemStack which, Player player) {
-        if (ModList.get().isLoaded("curios")) {
-            return !CuriosApi.getCuriosHelper().findEquippedCurio(stack -> stack == which, player).map(ImmutableTriple::getRight).orElse(ItemStack.EMPTY).isEmpty();
+        if (ModList.get().isLoaded("curios") &&
+                !CuriosApi.getCuriosHelper().findEquippedCurio(stack -> stack == which, player)
+                        .map(ImmutableTriple::getRight).orElse(ItemStack.EMPTY).isEmpty()) {
+            return true;
+        }
+        if (index == EquipmentSlot.CHEST.getIndex()) {
+            return player.getItemBySlot(EquipmentSlot.CHEST) == which;
         } else {
-            if (index == EquipmentSlot.CHEST.getIndex()) {
-                return player.getItemBySlot(EquipmentSlot.CHEST) == which;
-            } else {
-                return false;
-            }
+            return false;
         }
     }
 }
