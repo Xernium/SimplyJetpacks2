@@ -143,12 +143,6 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:the-one-probe-245211:5159287")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}+${minecraft_version}:api")
 
-
-    //runtimeOnly fg.deobf("curse.maven:cofhcore-69162:3621734")
-    //runtimeOnly fg.deobf("curse.maven:thermalfoundation-222880:3621736")
-    //runtimeOnly fg.deobf("curse.maven:thermalexpansion-69163:3607549")
-    //runtimeOnly fg.deobf("curse.maven:thermalinnovation-291737:3556270")
-//    runtimeOnly fg.deobf("curse.maven:thermal-dynamics-227443:x")
     //runtimeOnly fg.deobf("curse.maven:redstone-arsenal-70631:3621740")
     //runtimeOnly fg.deobf("curse.maven:redstone-repository-revolved-300750:3622366")
 
@@ -163,6 +157,11 @@ dependencies {
 
     runtimeOnly fg.deobf("curse.maven:configured-457570:5180900")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}+${minecraft_version}")
+    runtimeOnly fg.deobf("curse.maven:cofhcore-69162:5374122")
+    runtimeOnly fg.deobf("curse.maven:thermalfoundation-222880:5443583")
+    runtimeOnly fg.deobf("curse.maven:thermalexpansion-69163:5372749")
+    runtimeOnly fg.deobf("curse.maven:thermalinnovation-291737:5372751")
+    runtimeOnly fg.deobf("curse.maven:thermal-dynamics-227443:5372747")
 }
 
 jar {

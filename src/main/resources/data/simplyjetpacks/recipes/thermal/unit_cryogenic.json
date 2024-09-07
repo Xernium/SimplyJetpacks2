@@ -8,10 +8,10 @@
   "key": {
     "s": { "tag": "forge:ingots/signalum" },
     "l": { "tag": "forge:ingots/tin" },
-    "g": { "item": "thermal:obsidian_glass" }
+    "g": { "item": "simplyjetpacks:cryogenic_crystal" }
   },
   "result": {
-    "item": "simplyjetpacks:unit_cryotheum_empty",
+    "item": "simplyjetpacks:unit_cryogenic",
     "count": 1
   },
   "conditions": [

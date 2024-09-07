@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ghg",
+    "sls",
+    "hih"
+  ],
+  "key": {
+    "s": { "item": "minecraft:blue_ice" },
+    "l": {
+      "type": "forge:nbt",
+      "item": "thermal:florb",
+      "nbt": {
+        "Fluid": {
+          "FluidName": "minecraft:water",
+          "Amount": 1000
+        }
+      }
+    },
+    "g": { "tag": "forge:dusts/niter" },
+    "h": { "item": "thermal:ice_charge" },
+    "i": { "item": "thermal:ice_tnt" }
+  },
+  "result": {
+    "item": "simplyjetpacks:cryogenic_crystal",
+    "count": 1
+  },
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "thermal"
+    }
+  ]
+}

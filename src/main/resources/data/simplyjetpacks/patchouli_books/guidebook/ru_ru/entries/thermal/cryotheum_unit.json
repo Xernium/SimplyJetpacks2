@@ -1,17 +1,17 @@
 {
-  "name": "Криотиев. устройст. охлажд.",
-  "icon": "simplyjetpacks:unit_cryotheum",
+  "name": "криогенного охлаждающий модуль.",
+  "icon": "simplyjetpacks:unit_cryogenic",
   "category": "simplyjetpacks:thermal",
   "flag": "mod:thermal",
   "read_by_default": true,
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Это «Криотиевое устройство охлаждения». Его можно наполнить жидким «Криотерием» с использованием «Жидкостного капсулонаполнителя» из Thermal Series."
+      "text": "Это «криогенного охлаждающий модуль»."
     },
     {
       "type": "patchouli:crafting",
-      "recipe": "simplyjetpacks:thermal/unit_cryotheum_empty",
+      "recipe": "simplyjetpacks:thermal/unit_cryogenic",
       "text": "Это рецепт."
     }
   ]

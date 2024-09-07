@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "simplyjetpacks:item/unit_cryotheum_empty"
+    "layer0": "simplyjetpacks:item/cryogenic_crystal"
   }
 }
