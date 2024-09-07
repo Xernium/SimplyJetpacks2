@@ -43,7 +43,7 @@ public class JetpackItem extends ArmorItem implements IHUDInfoProvider, IEnergyC
     public final int tier;
 
     public JetpackItem(JetpackType jetpackType) {
-        super(jetpackType.isArmored() ? JetpackArmorMaterial.JETPACK_ARMORED : JetpackArmorMaterial.JETPACK, Type.CHESTPLATE, new Item.Properties());
+        super(jetpackType.isArmored() ? JetpackArmorMaterial.JETPACK_ARMORED : JetpackArmorMaterial.JETPACK, Type.CHESTPLATE, new Item.Properties().setNoRepair());
         this.jetpackType = jetpackType;
         this.tier = jetpackType.getTier();
     }
@@ -224,12 +224,11 @@ public class JetpackItem extends ArmorItem implements IHUDInfoProvider, IEnergyC
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        return (int) (1 - getChargeRatio(stack));
+        return Math.round(13.0F * getChargeRatio(stack));
     }
 
     @Override
     public int getBarColor(ItemStack stack) {
-        //return MathHelper.hsvToRgb((1 + getChargeRatio(stack)) / 3.0F, 1.0F, 1.0F);
         return 0x03fc49;
     }
 
