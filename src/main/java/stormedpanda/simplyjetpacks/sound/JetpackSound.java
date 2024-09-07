@@ -36,7 +36,7 @@ public class JetpackSound extends AbstractTickableSoundInstance {
 
     @Override
     public void tick() {
-        if (this.player.isSpectator()) {
+        if (this.player.isSpectator() || this.player.getAbilities().flying) {
             this.stop();
         }
         Vec3 pos = this.player.position();

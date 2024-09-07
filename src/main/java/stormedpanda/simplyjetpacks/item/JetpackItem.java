@@ -2,14 +2,12 @@ package stormedpanda.simplyjetpacks.item;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -24,7 +22,6 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
-import stormedpanda.simplyjetpacks.SimplyJetpacks;
 import stormedpanda.simplyjetpacks.config.SimplyJetpacksConfig;
 import stormedpanda.simplyjetpacks.energy.EnergyStorageImpl;
 import stormedpanda.simplyjetpacks.energy.IEnergyContainer;
@@ -82,7 +79,8 @@ public class JetpackItem extends ArmorItem implements IHUDInfoProvider, IEnergyC
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity holder, int vanillaIndex, boolean selected) {
-        if (holder instanceof Player player && !player.isSpectator() && (JetpackUtil.isInCorrectSlot(vanillaIndex, stack, player) || selected)) {
+        if (holder instanceof Player player && !player.isSpectator()
+                && !player.getAbilities().flying && JetpackUtil.checkTickForEquippedSlot(vanillaIndex, stack, player)) {
             flyUser(player, stack, this, false);
             if (this.jetpackType.getChargerMode() && this.isChargerOn(stack)) {
                 chargeInventory(player, stack);

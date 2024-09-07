@@ -17,3 +17,8 @@
 - [x] Fix item tag data gen
 - [x] Fix weird ghost state when using right click to equip jetpack
 - [ ] Check advancement triggers
+- [ ] Fix charging states
+- [ ] For maintainer: Check armor toughness values
+- [x] Fix texture stitching for curios
+- [x] Fix inconsistency with "creative flight"
+- [x] Fix priority curios - chestplate slot
