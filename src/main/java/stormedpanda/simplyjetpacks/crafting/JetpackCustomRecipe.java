@@ -1,9 +1,11 @@
 package stormedpanda.simplyjetpacks.crafting;
 
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -15,7 +17,7 @@ import stormedpanda.simplyjetpacks.item.JetpackItem;
 public class JetpackCustomRecipe extends CustomRecipe {
 
     public JetpackCustomRecipe(ResourceLocation recipeId) {
-        super(recipeId);
+        super(recipeId, CraftingBookCategory.MISC);
     }
 
     @Override
@@ -44,7 +46,7 @@ public class JetpackCustomRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inventory) {
+    public ItemStack assemble(CraftingContainer inventory, RegistryAccess registryAccess) {
         ItemStack jetpack = ItemStack.EMPTY;
         ItemStack particle = ItemStack.EMPTY;
         for (int i = 0; i < inventory.getContainerSize(); ++i) {

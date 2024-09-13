@@ -1,22 +1,30 @@
 package stormedpanda.simplyjetpacks.datagen;
 
+
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import stormedpanda.simplyjetpacks.SimplyJetpacks;
 import stormedpanda.simplyjetpacks.handlers.RegistryHandler;
 
 import javax.annotation.Nullable;
+import java.util.concurrent.CompletableFuture;
 
 public class SJItemTagsProvider extends ItemTagsProvider {
 
-    public SJItemTagsProvider(DataGenerator generatorIn, BlockTagsProvider blockTagProvider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(generatorIn, blockTagProvider, SimplyJetpacks.MODID, existingFileHelper);
+    public SJItemTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> blockTagProvider,
+                              CompletableFuture<TagsProvider.TagLookup<Block>> tagLookup,
+                              @Nullable ExistingFileHelper existingFileHelper) {
+        super(packOutput, blockTagProvider, tagLookup, SimplyJetpacks.MODID, existingFileHelper);
     }
 
     @Override
-    protected void addTags() {
+    protected void addTags(HolderLookup.Provider provider) {
         // Simply Jetpacks:
         tag(SJTags.PARTICLES)
                 .add(RegistryHandler.PARTICLE_NONE.get())

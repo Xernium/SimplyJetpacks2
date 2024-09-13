@@ -2,7 +2,6 @@ package stormedpanda.simplyjetpacks.item;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,12 +17,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
-import stormedpanda.simplyjetpacks.SimplyJetpacks;
 import stormedpanda.simplyjetpacks.config.SimplyJetpacksConfig;
 import stormedpanda.simplyjetpacks.energy.EnergyStorageImpl;
 import stormedpanda.simplyjetpacks.energy.IEnergyContainer;
@@ -45,13 +43,13 @@ public class JetpackItem extends ArmorItem implements IHUDInfoProvider, IEnergyC
     public final int tier;
 
     public JetpackItem(JetpackType jetpackType) {
-        super(JetpackArmorMaterial.JETPACK, EquipmentSlot.CHEST, new Item.Properties().tab(SimplyJetpacks.tabSimplyJetpacks));
+        super(jetpackType.isArmored() ? JetpackArmorMaterial.JETPACK_ARMORED : JetpackArmorMaterial.JETPACK, Type.CHESTPLATE, new Item.Properties().setNoRepair());
         this.jetpackType = jetpackType;
         this.tier = jetpackType.getTier();
     }
 
     public JetpackItem(JetpackType jetpackType, JetpackArmorMaterial material) {
-        super(material, EquipmentSlot.CHEST, new Item.Properties().tab(SimplyJetpacks.tabSimplyJetpacks));
+        super(material, Type.CHESTPLATE, new Item.Properties());
         this.jetpackType = jetpackType;
         this.tier = jetpackType.getTier();
     }
@@ -80,13 +78,15 @@ public class JetpackItem extends ArmorItem implements IHUDInfoProvider, IEnergyC
     }
 
     @Override
-    public void onArmorTick(ItemStack stack, Level level, Player player) {
-        if (!player.isSpectator() && stack == JetpackUtil.getFromBothSlots(player)) {
+    public void inventoryTick(ItemStack stack, Level level, Entity holder, int vanillaIndex, boolean selected) {
+        if (holder instanceof Player player && !player.isSpectator()
+                && !player.getAbilities().flying && JetpackUtil.checkTickForEquippedSlot(vanillaIndex, stack, player)) {
             flyUser(player, stack, this, false);
             if (this.jetpackType.getChargerMode() && this.isChargerOn(stack)) {
                 chargeInventory(player, stack);
             }
         }
+        super.inventoryTick(stack, level, holder, vanillaIndex, selected);
     }
 
     public JetpackType getJetpackType() {
@@ -183,7 +183,7 @@ public class JetpackItem extends ArmorItem implements IHUDInfoProvider, IEnergyC
     }
 
     public static float getChargeRatio(ItemStack stack) {
-        LazyOptional<IEnergyStorage> optional = stack.getCapability(CapabilityEnergy.ENERGY);
+        LazyOptional<IEnergyStorage> optional = stack.getCapability(ForgeCapabilities.ENERGY);
         if (optional.isPresent()) {
             IEnergyStorage energyStorage = optional.orElseThrow(IllegalStateException::new);
             return (float) energyStorage.getEnergyStored() / energyStorage.getMaxEnergyStored();
@@ -198,7 +198,7 @@ public class JetpackItem extends ArmorItem implements IHUDInfoProvider, IEnergyC
             @Nonnull
             @Override
             public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-                if (cap == CapabilityEnergy.ENERGY)
+                if (cap == ForgeCapabilities.ENERGY)
                     return LazyOptional.of(() -> new EnergyStorageImpl(stack, container)).cast();
                 return LazyOptional.empty();
             }
@@ -208,7 +208,7 @@ public class JetpackItem extends ArmorItem implements IHUDInfoProvider, IEnergyC
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level levelIn, List<Component> tooltip, TooltipFlag flagIn) {
-        if (CapabilityEnergy.ENERGY == null) return;
+        if (ForgeCapabilities.ENERGY == null) return;
         SJTextUtil.addBaseInfo(stack, tooltip);
         if (KeyboardUtil.isHoldingShift()) {
             SJTextUtil.addShiftInfo(stack, tooltip);
@@ -224,26 +224,18 @@ public class JetpackItem extends ArmorItem implements IHUDInfoProvider, IEnergyC
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        return (int) (1 - getChargeRatio(stack));
+        return Math.round(13.0F * getChargeRatio(stack));
     }
 
     @Override
     public int getBarColor(ItemStack stack) {
-        //return MathHelper.hsvToRgb((1 + getChargeRatio(stack)) / 3.0F, 1.0F, 1.0F);
         return 0x03fc49;
     }
 
-    @Override
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if (this.allowedIn(group)) {
-            items.add(new ItemStack(this));
-            if (!isCreative()) {
-                ItemStack full = new ItemStack(this);
-                //full.getOrCreateTag().putInt(Constants.TAG_ENERGY, jetpackType.getEnergyCapacity());
-                NBTUtil.setInt(full, Constants.TAG_ENERGY, jetpackType.getEnergyCapacity());
-                items.add(full);
-            }
-        }
+    public ItemStack asChargedCopy() {
+        ItemStack full = new ItemStack(this);
+        NBTUtil.setInt(full, Constants.TAG_ENERGY, jetpackType.getEnergyCapacity());
+        return full;
     }
 
     // TODO: find where MathHelper went and remove this.
@@ -319,8 +311,8 @@ public class JetpackItem extends ArmorItem implements IHUDInfoProvider, IEnergyC
     }
 
     private void charge(ItemStack jetpack, ItemStack item) {
-        if (!item.equals(jetpack) && item.getCapability(CapabilityEnergy.ENERGY).isPresent()) {
-            LazyOptional<IEnergyStorage> optional = item.getCapability(CapabilityEnergy.ENERGY);
+        if (!item.equals(jetpack) && item.getCapability(ForgeCapabilities.ENERGY).isPresent()) {
+            LazyOptional<IEnergyStorage> optional = item.getCapability(ForgeCapabilities.ENERGY);
             if (optional.isPresent()) {
                 IEnergyStorage energyStorage = optional.orElseThrow(IllegalStateException::new);
                 if (isCreative()) {
@@ -353,7 +345,7 @@ public class JetpackItem extends ArmorItem implements IHUDInfoProvider, IEnergyC
             double speedVerticalHover = jetpackType.getSpeedVerticalHover();
             double speedVerticalHoverSlow = jetpackType.getSpeedVerticalHoverSlow();
 
-            if ((flyKeyDown || hoverMode && !player.isOnGround())) {
+            if ((flyKeyDown || hoverMode && !player.onGround())) {
                 if (!isCreative()) {
                     int amount = (int) (player.isSprinting() ? Math.round(getEnergyUsage(stack) * jetpackType.getSprintEnergyModifier()) : getEnergyUsage(stack));
                     useEnergy(stack, amount);
@@ -399,14 +391,14 @@ public class JetpackItem extends ArmorItem implements IHUDInfoProvider, IEnergyC
                 }
             }
         }
-        if (!player.level.isClientSide && this.isEHoverOn(stack)) {
+        if (!player.getCommandSenderWorld().isClientSide && this.isEHoverOn(stack)) {
             if ((item.getEnergy(stack) > 0 || this.isCreative()) && (!this.isHoverOn(stack) || !this.isEngineOn(stack))) {
                 if (player.position().get(Direction.Axis.Y) < -5) {
                     this.doEHover(stack, player);
                 } else {
                     if (!player.isCreative() && player.fallDistance - 1.2F >= player.getHealth()) {
                         for (int j = 0; j <= 16; j++) {
-                            if (!player.isOnGround() && !player.isSwimming()) {
+                            if (!player.onGround() && !player.isSwimming()) {
                                 this.doEHover(stack, player);
                                 break;
                             }

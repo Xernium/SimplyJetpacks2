@@ -7,7 +7,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -41,7 +41,7 @@ public class RegistryHandler {
     public static final RegistryObject<SimpleParticleType> RAINBOW_PARTICLE = PARTICLE_TYPES.register("rainbow_particle", () -> new SimpleParticleType(false));
 
     // Recipes:
-    public static final RegistryObject<RecipeSerializer<JetpackCustomRecipe>> JETPACK_CUSTOM_RECIPE = RECIPE_SERIALIZERS.register("jetpack_custom_recipe",() -> new SimpleRecipeSerializer<>(JetpackCustomRecipe::new));
+    public static final RegistryObject<RecipeSerializer<JetpackCustomRecipe>> JETPACK_CUSTOM_RECIPE = RECIPE_SERIALIZERS.register("jetpack_custom_recipe",() -> new SimpleCraftingRecipeSerializer<>((location, category) -> new JetpackCustomRecipe(location)));
 
     // Enchantments:
     public static final EnchantmentCategory JETPACK_ENCHANTMENT_TYPE = EnchantmentCategory.create("JETPACK", (item -> item instanceof JetpackItem));
@@ -90,8 +90,8 @@ public class RegistryHandler {
     public static final RegistryObject<JetpackItem> JETPACK_TE3_ARMORED = ITEMS.register("jetpack_te3_armored", () -> new JetpackItem(JetpackType.TE3_ARMORED));
     public static final RegistryObject<JetpackItem> JETPACK_TE4 = ITEMS.register("jetpack_te4", () -> new JetpackItem(JetpackType.TE4));
     public static final RegistryObject<JetpackItem> JETPACK_TE4_ARMORED = ITEMS.register("jetpack_te4_armored", () -> new JetpackItem(JetpackType.TE4_ARMORED));
-    public static final RegistryObject<JetpackItem> JETPACK_TE5 = ITEMS.register("jetpack_te5", () -> new JetpackItem(JetpackType.TE5));
-    public static final RegistryObject<JetpackItem> JETPACK_TE5_ARMORED = ITEMS.register("jetpack_te5_enderium", () -> new JetpackItem(JetpackType.TE5_ARMORED));
+    public static final RegistryObject<JetpackItem> JETPACK_TE5 = ITEMS.register("jetpack_te5", () -> new JetpackItem(JetpackType.TE5, JetpackArmorMaterial.JETPLATE));
+    public static final RegistryObject<JetpackItem> JETPACK_TE5_ARMORED = ITEMS.register("jetpack_te5_enderium", () -> new JetpackItem(JetpackType.TE5_ARMORED, JetpackArmorMaterial.JETPLATE));
 
     public static final RegistryObject<JetpackItem> JETPACK_IE1 = ITEMS.register("jetpack_ie1", () -> new JetpackItem(JetpackType.IE1));
     public static final RegistryObject<JetpackItem> JETPACK_IE1_ARMORED = ITEMS.register("jetpack_ie1_armored", () -> new JetpackItem(JetpackType.IE1_ARMORED));
@@ -136,15 +136,15 @@ public class RegistryHandler {
     public static final RegistryObject<SJItem> THRUSTER_IE2 = ITEMS.register("thruster_ie2", SJItem::new);
     public static final RegistryObject<SJItem> THRUSTER_IE3 = ITEMS.register("thruster_ie3", SJItem::new);
     
-    public static final RegistryObject<SJItem> UNIT_CRYOTHEUM_EMPTY = ITEMS.register("unit_cryotheum_empty", SJItem::new);
-    public static final RegistryObject<SJItem> UNIT_CRYOTHEUM = ITEMS.register("unit_cryotheum", SJItem::new);
+    public static final RegistryObject<SJItem> CRYOGENIC_CRYSTAL = ITEMS.register("cryogenic_crystal", SJItem::new);
+    public static final RegistryObject<SJItem> UNIT_CRYOGENIC = ITEMS.register("unit_cryogenic", SJItem::new);
     public static final RegistryObject<SJItem> UNIT_GLOWSTONE_EMPTY = ITEMS.register("unit_glowstone_empty", SJItem::new);
     public static final RegistryObject<SJItem> UNIT_GLOWSTONE = ITEMS.register("unit_glowstone", SJItem::new);
 
     public static final RegistryObject<SJItem> FLUX_CHESTPLATE = ITEMS.register("flux_chestplate", SJItem::new);
 
     // Sound Events
-    public static final RegistryObject<SoundEvent> JETPACK_SOUND = SOUNDS.register("jetpack", () -> new SoundEvent(new ResourceLocation(SimplyJetpacks.MODID, "jetpack")));
-    public static final RegistryObject<SoundEvent> JETPACK_OTHER_SOUND = SOUNDS.register("jetpack_other", () -> new SoundEvent(new ResourceLocation(SimplyJetpacks.MODID, "jetpack_other")));
-    public static final RegistryObject<SoundEvent> ROCKET_SOUND = SOUNDS.register("rocket", () -> new SoundEvent(new ResourceLocation(SimplyJetpacks.MODID, "rocket")));
+    public static final RegistryObject<SoundEvent> JETPACK_SOUND = SOUNDS.register("jetpack", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SimplyJetpacks.MODID, "jetpack")));
+    public static final RegistryObject<SoundEvent> JETPACK_OTHER_SOUND = SOUNDS.register("jetpack_other", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SimplyJetpacks.MODID, "jetpack_other")));
+    public static final RegistryObject<SoundEvent> ROCKET_SOUND = SOUNDS.register("rocket", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(SimplyJetpacks.MODID, "rocket")));
 }

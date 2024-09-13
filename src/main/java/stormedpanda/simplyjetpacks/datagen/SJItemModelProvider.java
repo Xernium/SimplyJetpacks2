@@ -10,7 +10,7 @@ import stormedpanda.simplyjetpacks.SimplyJetpacks;
 public class SJItemModelProvider extends ItemModelProvider {
 
     public SJItemModelProvider(DataGenerator generatorIn, ExistingFileHelper existingFileHelper) {
-        super(generatorIn, SimplyJetpacks.MODID, existingFileHelper);
+        super(generatorIn.getPackOutput(), SimplyJetpacks.MODID, existingFileHelper);
     }
 
     @Override
@@ -106,8 +106,8 @@ public class SJItemModelProvider extends ItemModelProvider {
         builder(itemGenerated, "thruster_ie2");
         builder(itemGenerated, "thruster_ie3");
 
-        builder(itemGenerated, "unit_cryotheum_empty");
-        builder(itemGenerated, "unit_cryotheum");
+        builder(itemGenerated, "cryogenic_crystal");
+        builder(itemGenerated, "unit_cryogenic");
         builder(itemGenerated, "unit_glowstone_empty");
         builder(itemGenerated, "unit_glowstone");
 

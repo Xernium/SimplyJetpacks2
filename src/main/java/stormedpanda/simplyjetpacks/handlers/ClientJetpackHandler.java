@@ -29,7 +29,7 @@ public class ClientJetpackHandler {
         Minecraft minecraft = Minecraft.getInstance();
         if (event.phase == TickEvent.Phase.END) {
             if (minecraft.player != null && minecraft.level != null) {
-                if (!minecraft.isPaused() && !minecraft.player.isSpectator()) {
+                if (!minecraft.isPaused() && !minecraft.player.isSpectator() && !minecraft.player.getAbilities().flying) {
                     ItemStack chest = JetpackUtil.getFromBothSlots(minecraft.player);
                     Item item = chest.getItem();
                     if ((!chest.isEmpty() && item instanceof JetpackItem && isFlying(minecraft.player)) ||
@@ -87,7 +87,7 @@ public class ClientJetpackHandler {
                 JetpackItem jetpack = (JetpackItem) item;
                 if (jetpack.isEngineOn(stack) && (jetpack.getEnergy(stack) > 0 || jetpack.isCreative())) {
                     if (jetpack.isHoverOn(stack)) {
-                        return !player.isOnGround();
+                        return !player.onGround();
                     } else {
                         return CommonJetpackHandler.isHoldingUp(player);
                     }

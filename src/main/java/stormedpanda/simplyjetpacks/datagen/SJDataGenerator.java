@@ -1,7 +1,9 @@
 package stormedpanda.simplyjetpacks.datagen;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraftforge.common.data.BlockTagsProvider;
+import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -19,10 +21,20 @@ public final class SJDataGenerator {
         DataGenerator gen = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
+        // Required for 1.20 data-gen
+        BlockTagsProvider dummyProvider = new BlockTagsProvider(gen.getPackOutput(), event.getLookupProvider(), SimplyJetpacks.MODID, existingFileHelper) {
+            @Override
+            protected void addTags(HolderLookup.Provider provider) {}
+        };
+
         // TODO: test the boolean
         gen.addProvider(true, new SJItemModelProvider(gen, existingFileHelper));
-        gen.addProvider(true, new SJItemTagsProvider(gen, new BlockTagsProvider(gen, SimplyJetpacks.MODID, existingFileHelper), existingFileHelper));
+        gen.addProvider(true, dummyProvider);
+        gen.addProvider(true, new SJItemTagsProvider(gen.getPackOutput(), event.getLookupProvider(), dummyProvider.contentsGetter(), event.getExistingFileHelper()));
         gen.addProvider(true, new SJRecipeProvider(gen));
-        gen.addProvider(true, new SJAdvancementProvider(gen));
+        gen.addProvider(true, new SJAdvancementProviderAdapter(gen.getPackOutput(), event.getLookupProvider()));
+
+        DatapackBuiltinEntriesProvider modRegistryProvider = new SJRegistryProvider(gen.getPackOutput(), event.getLookupProvider());
+        gen.addProvider(true, modRegistryProvider);
     }
 }

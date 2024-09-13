@@ -1,53 +1,88 @@
 package stormedpanda.simplyjetpacks.datagen;
 
-import com.google.common.collect.Sets;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DataProvider;
-import net.minecraft.data.advancements.AdvancementProvider;
+import net.minecraft.advancements.DisplayInfo;
+import net.minecraft.advancements.FrameType;
+import net.minecraft.advancements.RequirementsStrategy;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.critereon.PlayerTrigger;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.advancements.AdvancementSubProvider;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.RegistryObject;
 import stormedpanda.simplyjetpacks.SimplyJetpacks;
+import stormedpanda.simplyjetpacks.handlers.RegistryHandler;
+import stormedpanda.simplyjetpacks.item.JetpackItem;
+import stormedpanda.simplyjetpacks.item.JetpackType;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Set;
 import java.util.function.Consumer;
 
-public class SJAdvancementProvider extends AdvancementProvider {
-
-    private static final Logger LOGGER = LogManager.getLogger();
-//    private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
-    private final DataGenerator generator;
-
-    public SJAdvancementProvider(DataGenerator generatorIn) {
-        super(generatorIn);
-        generator = generatorIn;
-    }
-
+public class SJAdvancementProvider implements AdvancementSubProvider {
 
     @Override
-    public void run(CachedOutput cache) {
-        Path path = this.generator.getOutputFolder();
-        Set<ResourceLocation> set = Sets.newHashSet();
-        Consumer<Advancement> consumer = (advancement) -> {
-            if (!set.add(advancement.getId())) {
-                throw new IllegalStateException("Duplicate advancement " + advancement.getId());
-            } else {
-                Path path1 = createPath(path, advancement);
-                try {
-                    DataProvider.saveStable(cache, advancement.deconstruct().serializeToJson(), path1);
-                } catch (IOException ioexception) {
-                    LOGGER.error("Couldn't save advancement {}", path1, ioexception);
+    public void generate(HolderLookup.Provider provider, Consumer<Advancement> consumer) {
+        Advancement root = Advancement.Builder.advancement().display(
+                new DisplayInfo(
+                        new ItemStack(RegistryHandler.JETPACK_CREATIVE.get()),
+                        Component.translatable("advancement.simplyjetpacks.root.title"),
+                        Component.translatable("advancement.simplyjetpacks.root.description"),
+                        new ResourceLocation("minecraft", "textures/gui/advancements/backgrounds/stone.png"),
+                        FrameType.TASK,
+                        true,
+                        false,
+                        false
+                ))
+                .requirements(RequirementsStrategy.OR)
+                .addCriterion("any",
+                        PlayerTrigger.TriggerInstance.located(
+                                EntityPredicate.Builder.entity().build()))
+                .save(consumer, SimplyJetpacks.MODID + ":root");
+
+        Advancement lastRoot = null;
+        JetpackType lastJetpackType = null;
+        for (JetpackType type : JetpackType.values()) {
+            if (!type.isNoAdvancements() && !type.isArmored()) {
+                RegistryObject<Item> currentJetpack = null;
+                for (RegistryObject<Item> item : RegistryHandler.ITEMS.getEntries()) {
+                    if (item.get() instanceof JetpackItem jetpackItem && jetpackItem.getJetpackType() == type) {
+                        currentJetpack = item;
+                        break;
+                    }
+                }
+                if (currentJetpack != null) {
+                    if (lastJetpackType == null || lastJetpackType.getTier() > type.getTier()) {
+                        lastRoot = generateJetpack(root, (JetpackItem) currentJetpack.get(), currentJetpack.getId(), consumer);
+                    } else {
+                        lastRoot = generateJetpack(lastRoot, (JetpackItem) currentJetpack.get(), currentJetpack.getId(), consumer);
+                    }
+                    lastJetpackType = type;
                 }
             }
-        };
-        new SJAdvancements().accept(consumer);
+        }
     }
 
-    private static Path createPath(Path path, Advancement advancement) {
-        return path.resolve("data/" + SimplyJetpacks.MODID + "/advancements/" + advancement.getId().getPath() + ".json");
+    private Advancement generateJetpack(Advancement parent, JetpackItem displayItem, ResourceLocation namespace, Consumer<Advancement> consumer) {
+        String advancementPath = "advancement." + namespace.getNamespace() + "." + namespace.getPath();
+        return Advancement.Builder.advancement().parent(parent).display(new DisplayInfo(
+                new ItemStack(displayItem),
+                Component.translatable(advancementPath + ".title"),
+                Component.translatable(advancementPath + ".description"),
+                null,
+                FrameType.TASK,
+                true,
+                true,
+                false
+
+        )).requirements(RequirementsStrategy.OR)
+                .addCriterion("has_jetpack",
+                        InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(displayItem).build()))
+                .save(consumer, namespace.getNamespace() + ":" + namespace.getNamespace() + "/" + namespace.getPath());
     }
 }

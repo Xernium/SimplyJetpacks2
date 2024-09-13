@@ -1,0 +1,25 @@
+{
+  "type": "thermal:bottler",
+  "ingredients": [
+    {
+      "item": "simplyjetpacks:unit_glowstone_empty"
+    },
+    {
+      "fluid_tag": "forge:glowstone",
+      "amount": 4000
+    }
+  ],
+  "result": [
+    {
+      "item": "simplyjetpacks:unit_glowstone"
+    }
+  ],
+  "energy": 40000,
+  "experience": 0.1,
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "thermal_expansion"
+    }
+  ]
+}

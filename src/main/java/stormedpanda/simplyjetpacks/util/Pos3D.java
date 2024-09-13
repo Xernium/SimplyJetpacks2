@@ -352,9 +352,9 @@ public class Pos3D extends Vec3 {
     @Override
     public int hashCode() {
         int code = 1;
-        code = 31 * code + new Double(x).hashCode();
-        code = 31 * code + new Double(y).hashCode();
-        code = 31 * code + new Double(z).hashCode();
+        code = 31 * code + ((Double) x).hashCode();
+        code = 31 * code + ((Double) y).hashCode();
+        code = 31 * code + ((Double) z).hashCode();
         return code;
     }
 }

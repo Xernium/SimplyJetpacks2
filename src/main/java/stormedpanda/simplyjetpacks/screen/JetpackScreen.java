@@ -1,9 +1,9 @@
 package stormedpanda.simplyjetpacks.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -14,20 +14,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.gui.widget.ForgeSlider;
+import org.joml.Quaternionf;
 import stormedpanda.simplyjetpacks.SimplyJetpacks;
-import stormedpanda.simplyjetpacks.handlers.KeybindHandler;
+import stormedpanda.simplyjetpacks.handlers.KeybindForgeBusHandler;
 import stormedpanda.simplyjetpacks.item.JetpackItem;
 import stormedpanda.simplyjetpacks.network.NetworkHandler;
 import stormedpanda.simplyjetpacks.network.packets.*;
 import stormedpanda.simplyjetpacks.util.JetpackUtil;
 import stormedpanda.simplyjetpacks.util.SJTextUtil;
 
-import javax.annotation.Nonnull;
-
 @OnlyIn(Dist.CLIENT)
 public class JetpackScreen extends Screen {
 
     private static final Minecraft minecraft = Minecraft.getInstance();
+    private static final float LEAN_FACTOR = 2.0f;
 
     private final ResourceLocation JETPACK_TEXTURE = new ResourceLocation(SimplyJetpacks.MODID, "textures/gui/jetpack_screen.png");
     private static final int WIDTH = 176;
@@ -85,15 +85,22 @@ public class JetpackScreen extends Screen {
     }
 
     @Override
-    public void render(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         int relX = (this.width - WIDTH) / 2;
         int relY = (this.height - HEIGHT) / 2;
 
         RenderSystem.setShaderTexture(0, JETPACK_TEXTURE);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-        blit(matrixStack, relX, relY, 0, 0, WIDTH, HEIGHT);
-        InventoryScreen.renderEntityInInventory(relX + 80, relY + 90, 40, (float)(relX + 51) - mouseX, (float)(relY + 75 - 50) - mouseY, minecraft.player);
-        drawCenteredString(matrixStack, minecraft.font, Component.translatable(jetpackStack.getDescriptionId()), relX + 88, relY + 5, 0xFFFFFF);
+        graphics.blit(JETPACK_TEXTURE, relX, relY, 0, 0, WIDTH, HEIGHT);
+
+        assert minecraft.screen != null;
+        float halfScreenHeight = minecraft.screen.height / 2f;
+        float halfScreenWidth = minecraft.screen.width / 2f;
+        float angleX = -((mouseX - halfScreenWidth) / halfScreenWidth * LEAN_FACTOR);
+        float angleY = -(((mouseY + 25) - halfScreenHeight) / halfScreenHeight * LEAN_FACTOR);
+
+        InventoryScreen.renderEntityInInventoryFollowsAngle(graphics, relX + 80, relY + 90, 40, angleX, angleY, minecraft.player);
+        graphics.drawCenteredString(minecraft.font, Component.translatable(jetpackStack.getDescriptionId()), relX + 88, relY + 5, 0xFFFFFF);
         RenderSystem.setShaderTexture(0, JETPACK_TEXTURE);
 
         NetworkHandler.sendToServer(new PacketUpdateThrottle(slider.getValueInt()));
@@ -116,16 +123,16 @@ public class JetpackScreen extends Screen {
         }
 
         if (jetpackItem.isCreative()) {
-            blit(matrixStack, relX + 10, relY + 16, 70, 178, 14, 78);
+            graphics.blit(JETPACK_TEXTURE, relX + 10, relY + 16, 70, 178, 14, 78);
         } else {
-            blit(matrixStack, relX + 10, relY + 16, barX, 178, 14, 78);
+            graphics.blit(JETPACK_TEXTURE, relX + 10, relY + 16, barX, 178, 14, 78);
             if (useGradient) {
                 // Top left corner -> bottom right corner
-                fillGradient(matrixStack, relX + 12, relY + 18 + barOffset, relX + 22, relY + 14 + 78, 0xffb51500, 0xff600b00);
+                graphics.fillGradient(relX + 12, relY + 18 + barOffset, relX + 22, relY + 14 + 78, 0xffb51500, 0xff600b00);
             } else {
                 //matrixStack, xPos, yPos, textureXPos, textureYPos, textureWidth, textureHeight
                 //blit(matrixStack, relX + 10, relY + 14 + barOffset - 1, barX + 14, 178 + 1, 14, amount - 1);
-                blit(matrixStack, relX + 10, relY + 16 + 1 + barOffset, barX + 14, 178 + 1, 14, amount - 2);
+                graphics.blit(JETPACK_TEXTURE, relX + 10, relY + 16 + 1 + barOffset, barX + 14, 178 + 1, 14, amount - 2);
             }
         }
         // This does not update like a screen container :(
@@ -138,10 +145,10 @@ public class JetpackScreen extends Screen {
                 text = SJTextUtil.translate("hud", "energyDepleted", ChatFormatting.RED);
             } else text = null;
             if (text != null) {
-                renderTooltip(matrixStack, text, mouseX, mouseY);
+                graphics.renderTooltip(font, text, mouseX, mouseY);
             }
         }
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        super.render(graphics, mouseX, mouseY, partialTicks);
     }
 
     private int getEnergyBarAmount() {
@@ -165,7 +172,7 @@ public class JetpackScreen extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (KeybindHandler.JETPACK_GUI_KEY.matches(keyCode, scanCode) || minecraft.options.keyInventory.matches(keyCode, scanCode)) {
+        if (KeybindForgeBusHandler.JETPACK_GUI_KEY.matches(keyCode, scanCode) || minecraft.options.keyInventory.matches(keyCode, scanCode)) {
             minecraft.setScreen(null);
             return true;
         }

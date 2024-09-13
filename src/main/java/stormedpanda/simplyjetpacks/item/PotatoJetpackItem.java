@@ -2,9 +2,17 @@ package stormedpanda.simplyjetpacks.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -16,9 +24,10 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.NotNull;
 import stormedpanda.simplyjetpacks.SimplyJetpacks;
+import stormedpanda.simplyjetpacks.datagen.SJDamageTypes;
 import stormedpanda.simplyjetpacks.handlers.CommonJetpackHandler;
 import stormedpanda.simplyjetpacks.handlers.RegistryHandler;
 import stormedpanda.simplyjetpacks.util.*;
@@ -27,6 +36,9 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
+
+import static stormedpanda.simplyjetpacks.datagen.SJDamageTypes.DEATH_BY_JETPACK_EXPLOSION;
+import static stormedpanda.simplyjetpacks.datagen.SJDamageTypes.DEATH_BY_POTATO_JETPACK;
 
 public class PotatoJetpackItem extends JetpackItem {
 
@@ -37,26 +49,13 @@ public class PotatoJetpackItem extends JetpackItem {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(PotatoJetpackItem.Rendering.INSTANCE);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private static class Rendering implements IClientItemExtensions {
-        private static final PotatoJetpackItem.Rendering INSTANCE = new PotatoJetpackItem.Rendering();
-
-        private Rendering() {
-        }
-
-        @Override
-        public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
-            return null;
-        }
+        consumer.accept(IClientItemExtensions.DEFAULT);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level levelIn, List<Component> tooltip, TooltipFlag flagIn) {
-        if (CapabilityEnergy.ENERGY == null) return;
+        if (ForgeCapabilities.ENERGY == null) return;
         tooltip.add(SJTextUtil.translate("tooltip", "jetpack_potato"));
         SJTextUtil.addBaseInfo(stack, tooltip);
         if (KeyboardUtil.isHoldingShift()) {
@@ -85,8 +84,8 @@ public class PotatoJetpackItem extends JetpackItem {
                 if (item.getEnergy(stack) <= 0) {
                     Random random = new Random();
                     player.getInventory().removeItem(stack);
-                    if (!player.level.isClientSide()) {
-                        player.level.explode(player, player.getX(), player.getY(), player.getZ(), 4.0F, Explosion.BlockInteraction.NONE);
+                    if (!player.getCommandSenderWorld().isClientSide()) {
+                        player.getCommandSenderWorld().explode(player, player.getX(), player.getY(), player.getZ(), 4.0F, Level.ExplosionInteraction.NONE);
                     }
                     for (int i = 0; i <= random.nextInt(3) + 4; i++) {
                         SimplyJetpacks.LOGGER.info("SJ2: CREATING FIREWORKS!");
@@ -94,9 +93,9 @@ public class PotatoJetpackItem extends JetpackItem {
                         //ItemStack firework = FireworksHelper.getRandomFireworks(0, 1, new Random().nextInt(6) + 1, 1);
                         //player.level.createFireworks(new ProjectileImpactEvent.FireworkRocket(player.level, player.getX() + new Random().nextDouble() * 6.0D - 3.0D, player.getY(), player.getZ() + new Random().nextDouble() * 6.0D - 3.0D, firework));
                     }
-//                    player.hurt(new EntityDamageSource(SimplyJetpacks.MODID + (random.nextBoolean() ? ".potato_jetpack" : ".jetpack_explode"), player), 100F);
+
                     player.drop(new ItemStack(Items.BAKED_POTATO), false);
-                    player.hurt(new DamageSource(SimplyJetpacks.MODID + (random.nextBoolean() ? ".potato_jetpack" : ".jetpack_explode")), 100F);
+                    player.hurt(SJDamageTypes.provideDamage(player.getCommandSenderWorld(), random.nextBoolean() ? DEATH_BY_POTATO_JETPACK : DEATH_BY_JETPACK_EXPLOSION), 100.0f);
                 }
             } else {
                 if (force || CommonJetpackHandler.isHoldingUp(player)) {
@@ -135,7 +134,7 @@ public class PotatoJetpackItem extends JetpackItem {
             this.setFired(itemStack);
             // TODO: test this
 //            player.level.playSound(player, player, SJSounds.ROCKET, SoundSource.PLAYERS, 1F, 1F);
-            player.level.playSound(player, player, RegistryHandler.ROCKET_SOUND.get(), SoundSource.PLAYERS, 1F, 1F);
+            player.getCommandSenderWorld().playSound(player, player, RegistryHandler.ROCKET_SOUND.get(), SoundSource.PLAYERS, 1F, 1F);
         }
     }
 }

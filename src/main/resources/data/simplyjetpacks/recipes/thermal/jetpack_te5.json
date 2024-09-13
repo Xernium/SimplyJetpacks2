@@ -8,7 +8,7 @@
   "key": {
     "p": { "item": "redstone_arsenal:flux_plating" },
     "c": { "item": "redstone_arsenal:flux_chestplate" },
-    "u": { "item": "simplyjetpacks:unit_cryotheum" },
+    "u": { "item": "simplyjetpacks:unit_cryogenic" },
     "j": { "item": "simplyjetpacks:jetpack_te4_armored" },
     "t": { "item": "simplyjetpacks:thruster_te5" },
     "f": { "item": "thermal:energy_cell" }

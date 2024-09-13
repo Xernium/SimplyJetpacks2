@@ -75,7 +75,7 @@ public class CuriosIntegration {
 
             @Override
             public void playRightClickEquipSound(LivingEntity livingEntity) {
-                livingEntity.level.playSound(null, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(),
+                livingEntity.getCommandSenderWorld().playSound(null, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(),
                         ((ArmorItem) itemStack.getItem()).getMaterial().getEquipSound(), SoundSource.PLAYERS, 1.0F, 1.0F
                 );
             }
@@ -97,7 +97,7 @@ public class CuriosIntegration {
 
             @Override
             public void playRightClickEquipSound(LivingEntity livingEntity) {
-                livingEntity.level.playSound(null, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(),
+                livingEntity.getCommandSenderWorld().playSound(null, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(),
                         ((ArmorItem) itemStack.getItem()).getMaterial().getEquipSound(), SoundSource.PLAYERS, 1.0F, 1.0F
                 );
             }
@@ -115,7 +115,7 @@ public class CuriosIntegration {
             @Override
             public void curioTick(String identifier, int index, LivingEntity livingEntity) {
                 if (livingEntity instanceof Player) {
-                    itemStack.onArmorTick(livingEntity.level, (Player) livingEntity);
+                    itemStack.onArmorTick(livingEntity.getCommandSenderWorld(), (Player) livingEntity);
                 }
             }
 

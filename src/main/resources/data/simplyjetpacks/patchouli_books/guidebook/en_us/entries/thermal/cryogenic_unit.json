@@ -1,0 +1,18 @@
+{
+  "name": "Cryogenic Coolant Unit",
+  "icon": "simplyjetpacks:unit_cryogenic",
+  "category": "simplyjetpacks:thermal",
+  "flag": "mod:thermal",
+  "read_by_default": true,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "This is the Cryogenic Coolant Unit. It is made from a cryogenic crystal"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "simplyjetpacks:thermal/unit_cryogenic",
+      "text": "This is the recipe."
+    }
+  ]
+}

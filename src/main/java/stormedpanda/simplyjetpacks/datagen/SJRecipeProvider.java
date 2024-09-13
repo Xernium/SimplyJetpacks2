@@ -1,7 +1,7 @@
 package stormedpanda.simplyjetpacks.datagen;
 
 import com.google.gson.JsonObject;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
@@ -12,7 +12,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 import stormedpanda.simplyjetpacks.SimplyJetpacks;
@@ -23,12 +23,12 @@ import java.util.function.Consumer;
 public class SJRecipeProvider extends RecipeProvider implements IConditionBuilder {
 
     public SJRecipeProvider(DataGenerator generatorIn) {
-        super(generatorIn);
+        super(generatorIn.getPackOutput());
     }
 
     @Override
-    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
-        SpecialRecipeBuilder.special((SimpleRecipeSerializer<?>) RegistryHandler.JETPACK_CUSTOM_RECIPE.get()).save(consumer, savePath("jetpack_custom_recipe"));
+    protected void buildRecipes(Consumer<FinishedRecipe> consumer) {
+        SpecialRecipeBuilder.special((SimpleCraftingRecipeSerializer<?>) RegistryHandler.JETPACK_CUSTOM_RECIPE.get()).save(consumer, savePath("jetpack_custom_recipe"));
 
         // Simply Jetpacks:
         CustomShapedRecipeBuilder.shaped(RegistryHandler.LEATHER_STRAP.get())
@@ -173,8 +173,9 @@ public class SJRecipeProvider extends RecipeProvider implements IConditionBuilde
         // armoring
         // TODO: test this (Registry.ITEM.getKey(item.asItem()))
 //        CustomShapelessRecipeBuilder.shapeless(armored).requires(base).requires(plating).save(consumer, savePath(modid + "/" + armored.asItem().getRegistryName().getPath()));
-        CustomShapelessRecipeBuilder.shapeless(armored).requires(base).requires(plating).save(consumer, savePath(modid + "/" + Registry.ITEM.getKey(armored.asItem()).getPath()));
+        CustomShapelessRecipeBuilder.shapeless(armored).requires(base).requires(plating).save(consumer, savePath(modid + "/" + BuiltInRegistries.ITEM.getKey(armored.asItem()).getPath()));
         // de-armoring
-        CustomShapelessRecipeBuilder.shapeless(base).requires(armored).save(consumer, savePath(modid + "/" + Registry.ITEM.getKey(base.asItem()).getPath() + "_from_armored"));
+        CustomShapelessRecipeBuilder.shapeless(base).requires(armored).save(consumer, savePath(modid + "/" + BuiltInRegistries.ITEM.getKey(base.asItem()).getPath() + "_from_armored"));
     }
+
 }
