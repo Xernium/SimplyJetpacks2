@@ -393,7 +393,7 @@ public class JetpackItem extends ArmorItem implements IHUDInfoProvider, IEnergyC
         }
         if (!player.getCommandSenderWorld().isClientSide && this.isEHoverOn(stack)) {
             if ((item.getEnergy(stack) > 0 || this.isCreative()) && (!this.isHoverOn(stack) || !this.isEngineOn(stack))) {
-                if (player.position().get(Direction.Axis.Y) < -5) {
+                if (player.position().get(Direction.Axis.Y) < -69) {
                     this.doEHover(stack, player);
                 } else {
                     if (!player.isCreative() && player.fallDistance - 1.2F >= player.getHealth()) {
